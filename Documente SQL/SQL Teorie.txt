@@ -1,0 +1,308 @@
+Pentru a ceea o noua baza de date:
+	- click dreapta pe Database
+		- New Database 
+		- punem denumirea
+		- click dreapta pe Tables
+
+Pentru a popula tabelul creat:
+	-click dreapta pe dbo.numele tabelului
+		-edit 
+		- apoi putem popula tabelul in functie de coloanele si liniile pe care le-am creat anterior
+		- aici vom adauga cheia primara, care de obicei este ID-ul
+
+Pentru a crea o noua interogare:
+	- click pe New Query
+	SELECT * - inseamna selecteaza tot din tabel
+	FROM - inseamna din ce tabel
+	WHERE - inseamna coloana cu un anumit nume
+
+Pentru a adauga tabele noi:
+	- click dreapta pe Table
+		- new Table
+		- ID-ul va trebui sa fie intotdeauna unic si nu poate fi null
+
+Pentru a conecta tabele intre ele prin cheile primare:
+	- click dreapta pe Database Diagrams
+		- selectam tabelele ce le vrem conectate intre ele
+		- conectam ID-ul fiecarui tabel 
+
+						EXPRESII SQL
+
+ASCII - returneaza codul ASCII al unui caracter
+CHAR - converteste un cod ASCII intr-un caracter
+LEN - returneaza lungimea unui sir
+CONCAT - concateneaza doua sau mai multe siruri
+REPLACE (string_expression, search_string, replacement_string) - inlocuieste fiecare aparitie a sirului
+		string_expression cu sirul replacement_string
+UPPER - converteste toate caracterele dinztr-un sir in majuscule
+LOWER - converteste toate caracterele dintr-un sir in litere mici
+SUBSTRING (str, pos,len) - returneaza un subsir din sirul de baza 'str' incepand cu pozitia 'pos'
+		si continuand cu lungimea 'len'
+CHARINDEX search_string, string_expression, [start_location]) - cauta un string intr-o expresie si
+		returneaza pozitia sa de pornire daca este gasita. Cautarea incepe la start_location
+Daca stringul nu este gasit in sir/expresir, CHARINDEX returneaza 0
+GETDATE() - returneaza data si ora curenta a sistemului
+DAY(date) - returneaza un numar intreg reprezentand partea de zi a datei specificate
+MONTH(date) - returneaza un numar intreg reprezentand partea deluna a datei specificate
+YEAR(date) - returneaza un numar intreg reprezentand partea de an a datei specificate
+ABS(numeric_exp) - returneaza valoarea absoluta a numenic_exp
+RAND([numeric_exp]) - genereaza un numar aleatoriu utilizat de expresia numerica
+ROUND(numeric_exp, integer_exp) - rotunjeste  numeric_exp la zecimale integer_exp
+SIGN(numeric_exp) - daca numeric_exp este mai mic decat valoarea 0, se returneaza -1. Daca numeric_exp
+		este egal cu 0 , se returneaza 0. Daca numeric_exp este mai mare decat 0, se returneaza 1.
+						
+						OPERATORII SQL
+
+DISTINCT - selecteaza numai inregistrarile distincte din tebele si elemina inregistrarile duplicate
+		SELECT DISTINCT column1, column2
+		FROM table1, table2
+
+ALIAS - denumeste o coloana unde ne sunt afisate datele din interogare
+		SELECT LastName AS Prenume
+		FROM Employees
+
+		SELECT column1
+		FROM table1 AS tableName1
+
+IN - verifica daca o valoare este continuta intr-un set de valori
+		SELECT column1, column2
+		FROM table1, table2
+		WHERE column1 IN (value1, value2, value3)
+
+BETWEEN - preia inregistrari care au valoare intr-un interval de valori. Valorile pot fi numere, text sau date
+		SELECT column1
+		FROM table1
+		WHERE column1 BETWEEN loer_value AND upper_value
+
+LIKE - cauta un model specific intr-o coloana. Pentru a utiliza operatorul LIKE folosim (%) sau (_)
+		Procent (%) va permite potrivirea unei secvente de orice caracter, inclusiv spatiu
+		Underscore (_) va permite inlocuirea oricarui caracter
+		
+		SELECT column1
+		FROM table1
+		WHERE column1 LIKE '%ABC'
+
+TOP - specifica numarul de inregistrari de returnat. Poate fi foarte util pe tabele mari cu mii de inregistrari
+		Returnarea unui numar mare de inregistrari poate afecta performanta
+
+		SELECT TOP[1000] column1
+		FROM table1
+
+ORDER BY - sorteaza inregistrarile returnate de coloanele specificate
+		Cuvantul cheie ORDER BY sorteaza in  od implicit inregistrarile in ordine crescatoare
+
+		SELECT column1
+		FROM table1
+		ORDER BY sort_key1[ASC|DESC]
+
+						SQL JOIN
+
+Cuvantul cheie JOIN este folosit intr-o instructiune SQL pentru a interoga datele din doua sau mai multe tabele,
+pe baza unei relatii dintre anumite coloane din aceste tabele.
+SQL ofera cinci tipuri de JOIN (unire):
+
+- INNER JOIN
+	- este cel mai intalnit tip de JOIN in SQL
+	- returneaza inregistrarile din ambele tabele in care se gaseste o potrivire pe baza conditiei de 
+	imbinare (join_condition).
+	- SQL INNER JOIN primeste toate inregistrarile din tabelul_a si gaseste inregistrarile care se potrivesc
+	in tabelul_b in functie de conditia de unire.
+	- conditia de alaturare determina daca ambele inregistrari se potrivesc sau nu.
+	- daca nu exista nici o potrivire gasita, nu se va returna nici o inregistrare
+	Sintaxa INNER JOIN
+		SELECT selection_list
+		FROM table_A
+		INNER JOIN Table_B ON <join_condition>
+		WHERE <row_condition>
+	Exemplu de folosire INNER JOIN
+		SELECT Orders,OrdersID, Customers.CompanyName
+		From Orders
+		INNER JOIN Customers ON Orders.CustomersID = Customers.CustomersID
+	Cuvantul cheie INNER JOIN selecteaza toate randurile din ambele tabele atata timp cat exista o potrivire intre coloane
+	Daca in tabelul 'Orders' exista inregistrari care nu au potriviri In Customers, aceste comenzi nu vor fi afisate 
+
+- LEFT JOIN
+	- returneaza toate inregistrarile din tabelul A (tabelul din stanga) plus inregistrarile care se potrivesc din tabelul B
+	(tabelul din dreapta).
+	- tabelul A din stanga ar trebui sa contina potriviri in tabelul B.
+	- pentru inregistrarile care nu au inregistrari care se potrivesc in tabelul B este returnata valoarea NULL.
+	Sintaxa LEFT JOIN
+		SELECT selection_list
+		FROM table_A
+		LEFT JOIN table_b ON <join_condition>
+		WHERE <row_condition>
+	Exemplu de folosire LEFT JOIN
+		SELECT Customers.ContactName, Orders.OrderID
+		FROM Customers
+		LEFT JOIN Orders ON Customers.CustomersID = Orders.CustomersID
+		ORDER BY Customers.ContactName
+	Cuvantul cheie LEFT JOIN returneaza toate inregistrarile din tabelul din stanga (Customers),
+	chiar daca nu exista portiviri in tabelul din dreapta (Orders).
+	Clientii fara comenzi vor avea o valoare NULL pe coloana de Orders,OrderID
+
+- RIGHT JOIN
+	- returneaza toate inregistrarile din tabelul B (tabelul din dreapta), chiar daca nicio inregistrare nu se potriveste
+	in tabelul A, plus inregistrarile care se potrivesc in tabelul A (tabelul din stanga).
+	- pentru inregistrarile care nu au potriviri in tabelul A, este returnata o valoare NULL
+	Sintaxa RIGHT JOIN
+		SELECT selection_list
+		FROM table_A
+		RIGHT JOIN table_B ON <join_condition>
+		WHERE <row_condition>
+	Exemplu de folosire RIGHT JOIN
+		SELECT Orders.OrderID, Employees.LastName, Employees.FirstName
+		FROM Orders
+		RIGHT JOIN Employees ON Orders.EmployeeID = Employyes.EmployeeID
+		ORDER BY Orders.OrderID
+	Cuvantul cheie RIGHT JOIN returneaza toare inregistrarile din tabelul din dreapta (Employees),
+	chiar daca nu exista potriviri in tabelul din stanga (Orders).
+
+- FULL JOIN
+	- combina rezultatele atat din tabelul din stanga, cat si a celui din dreapta, 
+	prin urmare toate inregistrarile din ambele tabele.
+	- pentru inregistrarile care nu au potriviri in ambele tabele, este returnata valoarea NULL.
+	Sintaxa FULL JOIN
+		SELECT selection_list
+		FROM table_A
+		FULL JOIN table_B ON <join_condition>
+		WHERE <row_condition>
+	Exemplu de folosire FULL JOIN
+		SELECT Customers.ContactName, Orders.OrderID
+		FROM Customers
+		FULL JOIN Orders ON Customers.CustomersID = Oreders.CustomersID
+		ORDER BY Customers.ContactName
+	Cuvantul cheie FULL JOIN returneaza toate randurile din tabelul din stanga (Customers) si toate randurile
+	din tabelul din dreapta (Orders)
+	Daca exista randuri in "Customers" care nu au potriviri in "Orders", sau daca exista randuri in "Orders"
+	care nu au potriviri in "Customers", acele randuri vor fi si ele listate
+
+- CROSS JOIN
+	- ofera fundatia pe care functioneaza toate tipurile de imbinari
+	- returneaza produsul cartezian al setului de inregistrari din cele doua tabele unite
+	- astfel, echivaleaza cu o imbinare in care conditia este intatdeauna evaluata la Adevarat
+	sau unde conditia este absenta din declaratie
+	Sintaxa CROSS JOIN
+		SELECT selection_list
+		FROM table_A
+		CROSS JOIN table_B
+
+- SQL UNION
+	- reprezinta o modalitate de unire a tabelelor
+	- practic prima si a doua interogare pot fi interogari SQL SELECT cu o restrictie conform careia
+	column_listA si column_listB trebuie sa fie compatibile
+	- inseamna ca ambele liste de coloane trebuie sa aiba acelasi numar de coloane si fiecare coloana 
+	corespunzatoare trebuie sa aiba acelasi tip de date sau acelasi tip de date convertibile.
+	Sintaxa SQL UNION
+		SELECT selection_listA
+		FROM table_A
+		UNION {DISTINCT|ALL}
+		SELECT selection_listB
+		FROM table_B	
+	-in mod implicit, SQL UNION elimina toate inregistrarile duplicate, in acest caz valorile NULL
+	sunt considerate ca o singura valoare
+	- pentru a evita duplicarea inregistrarilor, putem utiliza in mod explicit ALL cuvantul cheie urmat dupa UNION
+	- de retinut ca in mod implicit DISTINCT este folosit daca nu se specifica nimic dupa UNION	
+	Exemplu de folosire SQL UNION
+		SELECT city
+		FROM customers
+		UNION
+		SELECT city
+		FROM suppliers
+
+- GROUP BY 
+	- este folosit pentru a impartii un tabelal bazei de date in grupuri pe baza unor coloane
+	SELECT[ALL|DISTINCT] column1
+	FROM table1
+	[WHERE<condition>]
+	[GROUP BY<column_list>]
+	[ORDER BY <column_list>[ASC|DESC]]
+
+- HEAVING
+	- clauza HEAVING permite sa specificati conditii pe randuri pentru fiecate grup
+	- clauza SQL HEAVING este similara cu clauza WHERE din punct de vedere functional, dar filtreaza grupul
+	de inregistrari si nu inregistrarile.
+	- clauza HEAVING se utilizeaza dupa GROUP BY
+	SELECT[ALL|DISTINCT] column1
+	FROM table1
+[WHERE<conditions>]
+[GROUP BY<column-list>]
+[HAVING<conditions>]
+[ORDER BY<column-list[ASC|DESC]]
+
+						FUNCTII AGREGATE
+
+SQL Aggregate Functions - returneaza o singura valoare, calculata din valorile dintr-o coloana
+	AVG() - returneaza valoarea medie
+	COUNT() - returneaza numarul de randuri
+	FIRST() - returneaza prima valoare
+	LAST() - returneaza ultima valoare
+	MAX() - returneaza valoarea cea mai mare
+	MIN() - returneaza valoarea cea mai mica
+	SUM() - returneaza suma
+
+						ETL (Extract, Transform, Load)
+
+ETL reprezinta procesul de:
+	- Extract -> extragerea datelor din surse externe
+	- Transform -> transformarea acestora pentru a se potrivi nevoilor operationale
+	- Load -> incarcarea spre destinatia finala (baza de date)
+
+EXTRACT PROCESS
+	- se extrag datele din diferite sisteme sursa
+	- se formateaza datele
+	- datele sunt convetite intr-un singur format care este adecvat procesarii
+
+TRANSFORMATION PROCESS
+	- se selecteaza anumite coloane pentru incarcare
+	- se descifreaza coloanele codificate
+	- se obtin noi valori calculate
+	- datele sunt preluate si prelucrate din mai multe surse
+	- o coloana poate fi impartita in mai multe coloane
+	- acest proces reprezoimnta aplicarea oricarei forme de validate a datelor simple sau complexe
+
+LOAD PROCESS
+	- faza de incaracre a datelor catre tinta finala, baza de date
+	- suprascrie/actualizeaza informatiile existente cu informatii procesate
+
+Procesele ETL pot implica o complexitate considerabila dar de asemenea pot aparea probleme operationale
+	semnificative cu sistemele ETL proiectate necorespunzator.
+Implementarea procesarii paralele in software este o dezvoltare recenta ETL.
+Acest lucru a permis o serie de metode de imbunatatire a persormantei generale a proceselor ETL
+	atunci cand se lucreaza cu volume mai mari de date.
+
+						STORED PROCEDURE
+
+Procedurile stocate reprezinta interogari SQL deja scrise care au fost salvate in baza de date.
+Daca folositi aceeasi interogare din nou si din nou, ar fi util sa o introduceti intr-o procedura stocata.
+In caset fel se poate rulaprocedura stocata din mediul de comanda al bazei de date folosind comanda EXEC
+
+Pentru a ceea o procedura stocata:
+	- extindere Programmability
+		- click dreapta pe Stored Procedure
+			- selectam Stored Procedure
+			- se sterge ce scrie si se creeaza procedura.
+
+	/*Creare procedura stocata*/
+	CREATE PROCEDURE SelectALLCustomers @City nvarchar(30)
+	AS 
+	SELECT * FROM Customers WHERE City = @City
+
+	- se executa
+	- dam expend pe Stored Procedure
+	- ne afiseaza procedura creeata
+	- click dreapta pe procedura si selectam Execute
+	- in fereastra deschisa la Value scriem din ce oras sa se selecteze (in acest exemplu)
+
+						VIEWS
+
+Sunt instructiuni SQL salvate si uneori sunt denumite "Virtual Tables".
+VIEWS-urile nu pot stoca date si se refera doar la datele prezente in tabele.
+
+Exemplu:
+	- intram in baza de date creata sau pe care o dorim
+		- click pe table
+			- click dreapta pe views si de aici ne selectam tabelele pe care ni le dorim in view
+			practic, in loc sa facem o interogare sa afisam, de exemplu, toti angajatii si toti angajatorii,
+			selectam aceste tabele in view. Pentru a ne afisa ceea ce vrem din aceste tabele selectam
+			ceea ce ne intereseaza si se va creea o interogare ce ceea ce am selectat.
+			Acest view este salvat apoi in Views
